@@ -1,28 +1,94 @@
-let products = [
-  { id: 'P1', name: '1000 ml Mustard Oil with Label', price: 200, stock: 100 },
-  { id: 'P2', name: '500 ml Mustard Oil with Label', price: 110, stock: 100 },
-  { id: 'P3', name: '900 ml Mustard Oil with Label', price: 180, stock: 100 },
-  { id: 'P4', name: '450 ml Mustard Oil with Label', price: 100, stock: 100 },
-  { id: 'P5', name: '1000 ml Mustard Oil without Label', price: 190, stock: 100 },
-  { id: 'P6', name: '500 ml Mustard Oil without Label', price: 100, stock: 100 },
-  { id: 'P7', name: '900 ml Mustard Oil without Label', price: 170, stock: 100 },
-  { id: 'P8', name: '450 ml Mustard Oil without Label', price: 90, stock: 100 }
-];
-let materials = [
-  { id: 'M1', name: 'Mustard Seeds', unit: 'kg', stock: 1000 },
-  { id: 'M2', name: '1000 ml Bottles', unit: 'units', stock: 200 },
-  { id: 'M3', name: '500 ml Bottles', unit: 'units', stock: 200 },
-  { id: 'M4', name: '900 ml Bottles', unit: 'units', stock: 200 },
-  { id: 'M5', name: '450 ml Bottles', unit: 'units', stock: 200 },
-  { id: 'M6', name: 'Labels', unit: 'units', stock: 500 }
-];
+// Replace with your Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyBxzNhxOLNbK5TKq-zDrarFLUbkojW-Lug",
+  authDomain: "bsfooderp.firebaseapp.com",
+  databaseURL: "https://bsfooderp-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "bsfooderp",
+  storageBucket: "bsfooderp.firebasestorage.app",
+  messagingSenderId: "520628023883",
+  appId: "1:520628023883:web:20ad7a3174be400ace93ce"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+let products = [];
+let materials = [];
 let clients = [];
 let invoices = [];
 let payments = [];
-let expenses = []; // Simulated expenses
+let expenses = [];
 
-// Add sample expenses
-function initializeExpenses() {
+// Load data from Firebase
+function loadData() {
+  database.ref('products').once('value').then(snapshot => {
+    products = snapshot.val() || [];
+    loadProductStockProducts();
+    loadInventoryReport();
+  });
+  database.ref('materials').once('value').then(snapshot => {
+    materials = snapshot.val() || [];
+    loadRawMaterialStockMaterials();
+    loadInventoryReport();
+  });
+  database.ref('clients').once('value').then(snapshot => {
+    clients = snapshot.val() || [];
+    loadClients();
+    loadBillingData();
+  });
+  database.ref('invoices').once('value').then(snapshot => {
+    invoices = snapshot.val() || [];
+    loadDashboard();
+    loadPaymentInvoices();
+    loadSalesReport();
+  });
+  database.ref('payments').once('value').then(snapshot => {
+    payments = snapshot.val() || [];
+    loadPaymentInvoices();
+  });
+  database.ref('expenses').once('value').then(snapshot => {
+    expenses = snapshot.val() || [];
+    loadDashboard();
+  });
+}
+
+// Save data to Firebase
+function saveData() {
+  database.ref('products').set(products);
+  database.ref('materials').set(materials);
+  database.ref('clients').set(clients);
+  database.ref('invoices').set(invoices);
+  database.ref('payments').set(payments);
+  database.ref('expenses').set(expenses);
+}
+
+// Initialize with sample data if empty
+if (!products.length) {
+  products = [
+    { id: 'P1', name: '1000 ml Mustard Oil with Label', price: 200, stock: 100 },
+    { id: 'P2', name: '500 ml Mustard Oil with Label', price: 110, stock: 100 },
+    { id: 'P3', name: '900 ml Mustard Oil with Label', price: 180, stock: 100 },
+    { id: 'P4', name: '450 ml Mustard Oil with Label', price: 100, stock: 100 },
+    { id: 'P5', name: '1000 ml Mustard Oil without Label', price: 190, stock: 100 },
+    { id: 'P6', name: '500 ml Mustard Oil without Label', price: 100, stock: 100 },
+    { id: 'P7', name: '900 ml Mustard Oil without Label', price: 170, stock: 100 },
+    { id: 'P8', name: '450 ml Mustard Oil without Label', price: 90, stock: 100 }
+  ];
+  saveData();
+}
+if (!materials.length) {
+  materials = [
+    { id: 'M1', name: 'Mustard Seeds', unit: 'kg', stock: 1000 },
+    { id: 'M2', name: '1000 ml Bottles', unit: 'units', stock: 200 },
+    { id: 'M3', name: '500 ml Bottles', unit: 'units', stock: 200 },
+    { id: 'M4', name: '900 ml Bottles', unit: 'units', stock: 200 },
+    { id: 'M5', name: '450 ml Bottles', unit: 'units', stock: 200 },
+    { id: 'M6', name: 'Labels', unit: 'units', stock: 500 }
+  ];
+  saveData();
+}
+if (!expenses.length) {
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
@@ -33,8 +99,8 @@ function initializeExpenses() {
       date: new Date(currentYear, currentMonth - Math.floor(Math.random() * 6), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0]
     });
   }
+  saveData();
 }
-initializeExpenses();
 
 function showTab(tabId) {
   document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -86,7 +152,6 @@ function loadDashboard() {
   document.getElementById('current-fy-revenue').textContent = `₹${currentFYRevenue.toFixed(2)}`;
   document.getElementById('profit').textContent = `₹${profit}`;
 
-  // Sales Trend Chart
   const ctx = document.getElementById('sales-trend-chart').getContext('2d');
   new Chart(ctx, {
     type: 'bar',
@@ -102,12 +167,17 @@ function loadDashboard() {
           invoices.filter(i => new Date(i.date).getDate() <= 20 && new Date(i.date).getMonth() === currentMonth).reduce((sum, i) => sum + i.total, 0),
           invoices.filter(i => new Date(i.date).getDate() <= 25 && new Date(i.date).getMonth() === currentMonth).reduce((sum, i) => sum + i.total, 0)
         ],
-        backgroundColor: 'rgba(59, 130, 246, 0.6)'
+        backgroundColor: 'rgba(180, 134, 11, 0.8)',
+        borderColor: 'rgba(180, 134, 11, 1)',
+        borderWidth: 1
       }]
     },
     options: {
-      scales: { y: { beginAtZero: true } },
-      responsive: true
+      scales: { y: { beginAtZero: true, ticks: { color: '#4a5568' } } },
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#4a5568' } }
+      }
     }
   });
 
@@ -120,21 +190,21 @@ function loadDashboardContent() {
   const materialLow = materials.filter(m => m.stock < 10);
   const materialTotal = materials.reduce((sum, m) => sum + m.stock, 0);
   document.getElementById('dashboard-content').innerHTML += `
-    <div class="bg-white p-4 rounded shadow">
-      <h3 class="font-bold">Total Product Stock</h3>
-      <p>${productTotal} units</p>
+    <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition transform hover:-translate-y-2">
+      <h3 class="text-xl font-semibold text-blue-700">Total Product Stock</h3>
+      <p class="text-2xl font-bold text-gold-600 mt-2">${productTotal} units</p>
     </div>
-    <div class="bg-white p-4 rounded shadow">
-      <h3 class="font-bold">Product Low Stock Alerts</h3>
-      <ul>${productLow.map(p => `<li>${p.name}: ${p.stock} units</li>`).join('')}</ul>
+    <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition transform hover:-translate-y-2">
+      <h3 class="text-xl font-semibold text-blue-700">Product Low Stock Alerts</h3>
+      <ul class="mt-2">${productLow.map(p => `<li class="text-gold-600">${p.name}: ${p.stock} units</li>`).join('')}</ul>
     </div>
-    <div class="bg-white p-4 rounded shadow">
-      <h3 class="font-bold">Total Raw Material Stock</h3>
-      <p>${materialTotal} units/kg</p>
+    <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition transform hover:-translate-y-2">
+      <h3 class="text-xl font-semibold text-blue-700">Total Raw Material Stock</h3>
+      <p class="text-2xl font-bold text-gold-600 mt-2">${materialTotal} units/kg</p>
     </div>
-    <div class="bg-white p-4 rounded shadow">
-      <h3 class="font-bold">Raw Material Low Stock Alerts</h3>
-      <ul>${materialLow.map(m => `<li>${m.name}: ${m.stock} ${m.unit}</li>`).join('')}</ul>
+    <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition transform hover:-translate-y-2">
+      <h3 class="text-xl font-semibold text-blue-700">Raw Material Low Stock Alerts</h3>
+      <ul class="mt-2">${materialLow.map(m => `<li class="text-gold-600">${m.name}: ${m.stock} ${m.unit}</li>`).join('')}</ul>
     </div>
   `;
 }
@@ -147,13 +217,13 @@ function loadBillingData() {
 function addInvoiceItem() {
   const itemsDiv = document.getElementById('invoice-items');
   const newItem = document.createElement('div');
-  newItem.className = 'flex gap-4 mb-2';
+  newItem.className = 'flex gap-4 mb-2 animate-fade-in';
   newItem.innerHTML = `
-    <select class="product-select w-2/3 p-2 border rounded">
+    <select class="product-select w-2/3 p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500">
       <option value="">Select Product</option>
       ${products.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
     </select>
-    <input type="number" class="quantity-input w-1/3 p-2 border rounded" placeholder="Quantity" min="1">
+    <input type="number" class="quantity-input w-1/3 p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500" placeholder="Quantity" min="1">
   `;
   itemsDiv.appendChild(newItem);
 }
@@ -186,6 +256,7 @@ function createInvoice() {
     const product = products.find(p => p.id === id);
     product.stock -= Number(qtys[i]);
   });
+  saveData();
   document.getElementById('invoice-result').innerHTML = `Invoice ${invoice.id} created successfully`;
   document.querySelectorAll('.quantity-input').forEach(q => q.value = '');
   loadBillingData();
@@ -195,9 +266,9 @@ function createInvoice() {
 
 function loadClients() {
   document.getElementById('client-list').innerHTML = `
-    <table class="w-full border">
-      <tr class="bg-gray-200"><th>Name</th><th>Contact</th><th>Address</th><th>Actions</th></tr>
-      ${clients.map(c => `<tr><td>${c.name}</td><td>${c.contact}</td><td>${c.address}</td><td><button onclick="editClient('${c.id}')" class="text-blue-500">Edit</button></td></tr>`).join('')}
+    <table class="w-full border-collapse bg-white rounded-lg shadow-xl">
+      <tr class="bg-blue-700 text-white"><th class="p-3">Name</th><th class="p-3">Contact</th><th class="p-3">Address</th><th class="p-3">Actions</th></tr>
+      ${clients.map(c => `<tr class="border-t"><td class="p-3">${c.name}</td><td class="p-3">${c.contact}</td><td class="p-3">${c.address}</td><td class="p-3"><button onclick="editClient('${c.id}')" class="text-gold-300 hover:text-gold-500 transition">Edit</button></td></tr>`).join('')}
     </table>
   `;
 }
@@ -219,6 +290,7 @@ function saveClient() {
     const index = clients.findIndex(c => c.id === client.id);
     clients[index] = client;
   }
+  saveData();
   document.getElementById('client-id').value = '';
   document.getElementById('client-name').value = '';
   document.getElementById('client-contact').value = '';
@@ -248,6 +320,7 @@ function addProductStock() {
   }
   const product = products.find(p => p.id === productID);
   product.stock += Number(quantity);
+  saveData();
   document.getElementById('product-stock-result').innerHTML = 'Product stock updated';
   document.getElementById('product-stock-quantity').value = '';
   loadInventoryReport();
@@ -266,6 +339,7 @@ function addRawMaterialStock() {
   }
   const material = materials.find(m => m.id === materialID);
   material.stock += Number(quantity);
+  saveData();
   document.getElementById('raw-material-stock-result').innerHTML = 'Raw material stock updated';
   document.getElementById('raw-material-stock-quantity').value = '';
   loadInventoryReport();
@@ -273,15 +347,15 @@ function addRawMaterialStock() {
 
 function loadInventoryReport() {
   document.getElementById('product-inventory-report').innerHTML = `
-    <table class="w-full border">
-      <tr class="bg-gray-200"><th>Product</th><th>Stock</th><th>Status</th></tr>
-      ${products.map(p => `<tr><td>${p.name}</td><td>${p.stock}</td><td>${p.stock < 10 ? 'Low' : 'OK'}</td></tr>`).join('')}
+    <table class="w-full border-collapse bg-white rounded-lg shadow-xl">
+      <tr class="bg-blue-700 text-white"><th class="p-3">Product</th><th class="p-3">Stock</th><th class="p-3">Status</th></tr>
+      ${products.map(p => `<tr class="border-t"><td class="p-3">${p.name}</td><td class="p-3">${p.stock}</td><td class="p-3 ${p.stock < 10 ? 'text-red-500' : 'text-green-500'}">${p.stock < 10 ? 'Low' : 'OK'}</td></tr>`).join('')}
     </table>
   `;
   document.getElementById('raw-material-inventory-report').innerHTML = `
-    <table class="w-full border">
-      <tr class="bg-gray-200"><th>Raw Material</th><th>Unit</th><th>Stock</th><th>Status</th></tr>
-      ${materials.map(m => `<tr><td>${m.name}</td><td>${m.unit}</td><td>${m.stock}</td><td>${m.stock < 10 ? 'Low' : 'OK'}</td></tr>`).join('')}
+    <table class="w-full border-collapse bg-white rounded-lg shadow-xl">
+      <tr class="bg-blue-700 text-white"><th class="p-3">Raw Material</th><th class="p-3">Unit</th><th class="p-3">Stock</th><th class="p-3">Status</th></tr>
+      ${materials.map(m => `<tr class="border-t"><td class="p-3">${m.name}</td><td class="p-3">${m.unit}</td><td class="p-3">${m.stock}</td><td class="p-3 ${m.stock < 10 ? 'text-red-500' : 'text-green-500'}">${m.stock < 10 ? 'Low' : 'OK'}</td></tr>`).join('')}
     </table>
   `;
 }
@@ -301,6 +375,7 @@ function recordPayment() {
   payments.push({ id: 'PAY' + (payments.length + 1), invoiceID, amount, date: new Date().toISOString().split('T')[0] });
   const totalPaid = payments.filter(p => p.invoiceID === invoiceID).reduce((sum, p) => sum + Number(p.amount), 0);
   invoice.status = totalPaid >= invoice.total ? 'Paid' : 'Pending';
+  saveData();
   document.getElementById('payment-result').innerHTML = 'Payment recorded';
   document.getElementById('payment-amount').value = '';
   loadPaymentInvoices();
@@ -314,9 +389,9 @@ function loadSalesReport() {
     return (!startDate || date >= new Date(startDate)) && (!endDate || date <= new Date(endDate));
   });
   document.getElementById('sales-report').innerHTML = `
-    <table class="w-full border">
-      <tr class="bg-gray-200"><th>Invoice</th><th>Client</th><th>Total</th><th>Date</th><th>Status</th></tr>
-      ${filteredInvoices.map(i => `<tr><td>${i.id}</td><td>${i.clientID}</td><td>${i.total}</td><td>${i.date}</td><td>${i.status}</td></tr>`).join('')}
+    <table class="w-full border-collapse bg-white rounded-lg shadow-xl">
+      <tr class="bg-blue-700 text-white"><th class="p-3">Invoice</th><th class="p-3">Client</th><th class="p-3">Total</th><th class="p-3">Date</th><th class="p-3">Status</th></tr>
+      ${filteredInvoices.map(i => `<tr class="border-t"><td class="p-3">${i.id}</td><td class="p-3">${i.clientID}</td><td class="p-3">${i.total}</td><td class="p-3">${i.date}</td><td class="p-3 ${i.status === 'Paid' ? 'text-green-500' : 'text-red-500'}">${i.status}</td></tr>`).join('')}
     </table>
   `;
 }
@@ -325,5 +400,16 @@ function getSalesReport() {
   loadSalesReport();
 }
 
-// Load initial data
-loadDashboard();
+// Load initial data with animation
+window.addEventListener('load', () => {
+  loadData();
+  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('animate-fade-in'));
+});
+
+// CSS Animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .animate-fade-in { animation: fadeIn 0.5s ease-in; }
+`;
+document.head.appendChild(style);
