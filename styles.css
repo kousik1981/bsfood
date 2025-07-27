@@ -1,0 +1,4 @@
+body { font-family: Arial, sans-serif; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+canvas { max-width: 100%; height: auto !important; }
