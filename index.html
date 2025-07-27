@@ -3,129 +3,156 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Factory Inventory & Payment App</title>
+  <title>BS Food ERP - Inventory & Payment Solution</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="bg-blue-600 text-white p-4">
-    <h1 class="text-2xl font-bold">Factory Inventory & Payment App</h1>
+  <header class="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-4 shadow-lg">
+    <div class="container mx-auto flex justify-between items-center px-4">
+      <div class="flex items-center">
+        <div class="w-12 h-12 bg-gold-500 rounded-full mr-3"></div> <!-- Logo Placeholder -->
+        <h1 class="text-3xl font-bold">BS Food ERP</h1>
+      </div>
+      <nav>
+        <ul class="flex space-x-4">
+          <li><a href="#dashboard" onclick="showTab('dashboard')" class="text-white hover:text-gold-300 transition">Dashboard</a></li>
+          <li><a href="#billing" onclick="showTab('billing')" class="text-white hover:text-gold-300 transition">Billing</a></li>
+          <li><a href="#clients" onclick="showTab('clients')" class="text-white hover:text-gold-300 transition">Clients</a></li>
+          <li><a href="#product-stock" onclick="showTab('product-stock')" class="text-white hover:text-gold-300 transition">Product Stock</a></li>
+          <li><a href="#raw-material-stock" onclick="showTab('raw-material-stock')" class="text-white hover:text-gold-300 transition">Raw Material Stock</a></li>
+          <li><a href="#inventory" onclick="showTab('inventory')" class="text-white hover:text-gold-300 transition">Inventory</a></li>
+          <li><a href="#payments" onclick="showTab('payments')" class="text-white hover:text-gold-300 transition">Payments</a></li>
+          <li><a href="#sales" onclick="showTab('sales')" class="text-white hover:text-gold-300 transition">Sales</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
-  <nav class="bg-white shadow p-4">
-    <ul class="flex flex-wrap gap-4">
-      <li><button onclick="showTab('dashboard')" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Dashboard</button></li>
-      <li><button onclick="showTab('billing')" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Billing</button></li>
-      <li><button onclick="showTab('clients')" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Clients</button></li>
-      <li><button onclick="showTab('product-stock')" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Product Stock</button></li>
-      <li><button onclick="showTab('raw-material-stock')" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Raw Material Stock</button></li>
-      <li><button onclick="showTab('inventory')" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Inventory Report</button></li>
-      <li><button onclick="showTab('payments')" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Payments</button></li>
-      <li><button onclick="showTab('sales')" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Sales Report</button></li>
-    </ul>
-  </nav>
-  <main class="container mx-auto p-4 flex-grow">
+  <main class="container mx-auto p-6">
     <div id="dashboard" class="tab-content active">
-      <h2 class="text-xl font-bold mb-4">Dashboard</h2>
-      <div id="dashboard-content" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-white p-4 rounded shadow">
-          <h3 class="font-bold">Current Month Sales Revenue</h3>
-          <p id="current-month-revenue" class="text-2xl">₹0</p>
+      <h2 class="text-3xl font-bold text-blue-900 mb-6">Dashboard Overview</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition transform hover:-translate-y-2">
+          <h3 class="text-xl font-semibold text-blue-700">Current Month Sales</h3>
+          <p id="current-month-revenue" class="text-4xl font-bold text-gold-600 mt-2">₹0</p>
         </div>
-        <div class="bg-white p-4 rounded shadow">
-          <h3 class="font-bold">Current FY Sales Revenue</h3>
-          <p id="current-fy-revenue" class="text-2xl">₹0</p>
+        <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition transform hover:-translate-y-2">
+          <h3 class="text-xl font-semibold text-blue-700">Current FY Sales</h3>
+          <p id="current-fy-revenue" class="text-4xl font-bold text-gold-600 mt-2">₹0</p>
         </div>
-        <div class="bg-white p-4 rounded shadow">
-          <h3 class="font-bold">Profit</h3>
-          <p id="profit" class="text-2xl">₹0</p>
+        <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition transform hover:-translate-y-2">
+          <h3 class="text-xl font-semibold text-blue-700">Profit</h3>
+          <p id="profit" class="text-4xl font-bold text-gold-600 mt-2">₹0</p>
         </div>
-        <div class="bg-white p-4 rounded shadow col-span-3">
-          <h3 class="font-bold">Sales Trend (Current Month)</h3>
-          <canvas id="sales-trend-chart"></canvas>
+        <div class="bg-white p-6 rounded-lg shadow-xl col-span-3 hover:shadow-2xl transition transform hover:-translate-y-2">
+          <h3 class="text-xl font-semibold text-blue-700">Sales Trend (This Month)</h3>
+          <canvas id="sales-trend-chart" class="mt-4"></canvas>
         </div>
       </div>
     </div>
     <div id="billing" class="tab-content">
-      <h2 class="text-xl font-bold mb-4">Create Invoice</h2>
-      <div class="mb-4">
-        <label class="block mb-1">Client:</label>
-        <select id="invoice-client" class="w-full p-2 border rounded"></select>
-      </div>
-      <div id="invoice-items" class="mb-4">
-        <div class="flex gap-4 mb-2">
-          <select class="product-select w-2/3 p-2 border rounded"></select>
-          <input type="number" class="quantity-input w-1/3 p-2 border rounded" placeholder="Quantity" min="1">
+      <h2 class="text-3xl font-bold text-blue-900 mb-6">Create Invoice</h2>
+      <div class="bg-white p-6 rounded-lg shadow-xl">
+        <div class="mb-4">
+          <label class="block text-lg text-blue-700 mb-2">Client:</label>
+          <select id="invoice-client" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"></select>
         </div>
+        <div id="invoice-items" class="mb-4">
+          <div class="flex gap-4 mb-2">
+            <select class="product-select w-2/3 p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"></select>
+            <input type="number" class="quantity-input w-1/3 p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500" placeholder="Quantity" min="1">
+          </div>
+        </div>
+        <button onclick="addInvoiceItem()" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition transform hover:scale-105">Add Item</button>
+        <button onclick="createInvoice()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition transform hover:scale-105 mt-4">Create Invoice</button>
+        <div id="invoice-result" class="mt-4 text-lg text-green-600"></div>
       </div>
-      <button onclick="addInvoiceItem()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Add Item</button>
-      <button onclick="createInvoice()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2">Create Invoice</button>
-      <div id="invoice-result" class="mt-4"></div>
     </div>
     <div id="clients" class="tab-content">
-      <h2 class="text-xl font-bold mb-4">Manage Clients</h2>
-      <div class="mb-4">
-        <input id="client-id" type="hidden">
-        <label class="block mb-1">Name:</label>
-        <input id="client-name" type="text" class="w-full p-2 border rounded" placeholder="Client Name">
-        <label class="block mb-1 mt-2">Contact:</label>
-        <input id="client-contact" type="text" class="w-full p-2 border rounded" placeholder="Contact Info">
-        <label class="block mb-1 mt-2">Address:</label>
-        <input id="client-address" type="text" class="w-full p-2 border rounded" placeholder="Address">
-        <button onclick="saveClient()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2">Save Client</button>
+      <h2 class="text-3xl font-bold text-blue-900 mb-6">Manage Clients</h2>
+      <div class="bg-white p-6 rounded-lg shadow-xl">
+        <div class="mb-4">
+          <input id="client-id" type="hidden">
+          <label class="block text-lg text-blue-700 mb-2">Name:</label>
+          <input id="client-name" type="text" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500" placeholder="Client Name">
+          <label class="block text-lg text-blue-700 mb-2 mt-4">Contact:</label>
+          <input id="client-contact" type="text" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500" placeholder="Contact Info">
+          <label class="block text-lg text-blue-700 mb-2 mt-4">Address:</label>
+          <input id="client-address" type="text" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500" placeholder="Address">
+          <button onclick="saveClient()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition transform hover:scale-105 mt-4">Save Client</button>
+        </div>
+        <div id="client-list" class="mt-4"></div>
       </div>
-      <div id="client-list" class="mt-4"></div>
     </div>
     <div id="product-stock" class="tab-content">
-      <h2 class="text-xl font-bold mb-4">Product Stock Entry</h2>
-      <div class="mb-4">
-        <label class="block mb-1">Product:</label>
-        <select id="product-stock-product" class="w-full p-2 border rounded"></select>
-        <label class="block mb-1 mt-2">Quantity:</label>
-        <input id="product-stock-quantity" type="number" class="w-full p-2 border rounded" placeholder="Quantity" min="1">
-        <button onclick="addProductStock()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2">Add Product Stock</button>
+      <h2 class="text-3xl font-bold text-blue-900 mb-6">Product Stock Entry</h2>
+      <div class="bg-white p-6 rounded-lg shadow-xl">
+        <div class="mb-4">
+          <label class="block text-lg text-blue-700 mb-2">Product:</label>
+          <select id="product-stock-product" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"></select>
+          <label class="block text-lg text-blue-700 mb-2 mt-4">Quantity:</label>
+          <input id="product-stock-quantity" type="number" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500" placeholder="Quantity" min="1">
+          <button onclick="addProductStock()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition transform hover:scale-105 mt-4">Add Product Stock</button>
+        </div>
+        <div id="product-stock-result" class="mt-4 text-lg text-green-600"></div>
       </div>
-      <div id="product-stock-result" class="mt-4"></div>
     </div>
     <div id="raw-material-stock" class="tab-content">
-      <h2 class="text-xl font-bold mb-4">Raw Material Stock Entry</h2>
-      <div class="mb-4">
-        <label class="block mb-1">Raw Material:</label>
-        <select id="raw-material-stock-material" class="w-full p-2 border rounded"></select>
-        <label class="block mb-1 mt-2">Quantity:</label>
-        <input id="raw-material-stock-quantity" type="number" class="w-full p-2 border rounded" placeholder="Quantity" min="1">
-        <button onclick="addRawMaterialStock()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2">Add Raw Material Stock</button>
+      <h2 class="text-3xl font-bold text-blue-900 mb-6">Raw Material Stock Entry</h2>
+      <div class="bg-white p-6 rounded-lg shadow-xl">
+        <div class="mb-4">
+          <label class="block text-lg text-blue-700 mb-2">Raw Material:</label>
+          <select id="raw-material-stock-material" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"></select>
+          <label class="block text-lg text-blue-700 mb-2 mt-4">Quantity:</label>
+          <input id="raw-material-stock-quantity" type="number" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500" placeholder="Quantity" min="1">
+          <button onclick="addRawMaterialStock()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition transform hover:scale-105 mt-4">Add Raw Material Stock</button>
+        </div>
+        <div id="raw-material-stock-result" class="mt-4 text-lg text-green-600"></div>
       </div>
-      <div id="raw-material-stock-result" class="mt-4"></div>
     </div>
     <div id="inventory" class="tab-content">
-      <h2 class="text-xl font-bold mb-4">Inventory Report</h2>
-      <h3 class="text-lg font-bold mt-4">Products</h3>
-      <div id="product-inventory-report" class="mt-2"></div>
-      <h3 class="text-lg font-bold mt-4">Raw Materials</h3>
-      <div id="raw-material-inventory-report" class="mt-2"></div>
+      <h2 class="text-3xl font-bold text-blue-900 mb-6">Inventory Report</h2>
+      <div class="bg-white p-6 rounded-lg shadow-xl">
+        <h3 class="text-xl font-semibold text-blue-700 mt-4">Products</h3>
+        <div id="product-inventory-report" class="mt-2"></div>
+        <h3 class="text-xl font-semibold text-blue-700 mt-6">Raw Materials</h3>
+        <div id="raw-material-inventory-report" class="mt-2"></div>
+      </div>
     </div>
     <div id="payments" class="tab-content">
-      <h2 class="text-xl font-bold mb-4">Record Payment</h2>
-      <div class="mb-4">
-        <label class="block mb-1">Invoice:</label>
-        <select id="payment-invoice" class="w-full p-2 border rounded"></select>
-        <label class="block mb-1 mt-2">Amount:</label>
-        <input id="payment-amount" type="number" class="w-full p-2 border rounded" placeholder="Amount" min="0">
-        <button onclick="recordPayment()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2">Record Payment</button>
+      <h2 class="text-3xl font-bold text-blue-900 mb-6">Record Payment</h2>
+      <div class="bg-white p-6 rounded-lg shadow-xl">
+        <div class="mb-4">
+          <label class="block text-lg text-blue-700 mb-2">Invoice:</label>
+          <select id="payment-invoice" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"></select>
+          <label class="block text-lg text-blue-700 mb-2 mt-4">Amount:</label>
+          <input id="payment-amount" type="number" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500" placeholder="Amount" min="0">
+          <button onclick="recordPayment()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition transform hover:scale-105 mt-4">Record Payment</button>
+        </div>
+        <div id="payment-result" class="mt-4 text-lg text-green-600"></div>
       </div>
-      <div id="payment-result" class="mt-4"></div>
     </div>
     <div id="sales" class="tab-content">
-      <h2 class="text-xl font-bold mb-4">Sales Report</h2>
-      <div class="mb-4">
-        <label class="block mb-1">Start Date:</label>
-        <input id="sales-start-date" type="date" class="w-full p-2 border rounded">
-        <label class="block mb-1 mt-2">End Date:</label>
-        <input id="sales-end-date" type="date" class="w-full p-2 border rounded">
-        <button onclick="getSalesReport()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2">Generate Report</button>
+      <h2 class="text-3xl font-bold text-blue-900 mb-6">Sales Report</h2>
+      <div class="bg-white p-6 rounded-lg shadow-xl">
+        <div class="mb-4">
+          <label class="block text-lg text-blue-700 mb-2">Start Date:</label>
+          <input id="sales-start-date" type="date" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500">
+          <label class="block text-lg text-blue-700 mb-2 mt-4">End Date:</label>
+          <input id="sales-end-date" type="date" class="w-full p-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500">
+          <button onclick="getSalesReport()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition transform hover:scale-105 mt-4">Generate Report</button>
+        </div>
+        <div id="sales-report" class="mt-4"></div>
       </div>
-      <div id="sales-report" class="mt-4"></div>
     </div>
   </main>
+  <footer class="bg-blue-900 text-white py-4 mt-6">
+    <div class="container mx-auto text-center">
+      <p>&copy; 2025 BS Food ERP Solutions. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
