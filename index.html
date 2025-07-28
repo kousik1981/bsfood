@@ -4,115 +4,148 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BS Food ERP</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #e0e0e0;
+      font-family: 'Poppins', sans-serif;
+    }
+    .card {
+      background: rgba(26, 26, 46, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+    }
+    .button {
+      background: linear-gradient(45deg, #4facfe, #00f2fe);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      color: white;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+    .button:hover {
+      opacity: 0.9;
+    }
+    .tab-content {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .gradient-text {
+      background: linear-gradient(45deg, #4facfe, #00f2fe);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans">
-  <header class="bg-blue-800 text-white p-4">
+<body class="min-h-screen">
+  <header class="bg-gradient-to-r from-blue-900 to-gray-900 p-6 shadow-lg">
     <div class="container mx-auto flex justify-between items-center">
-      <h1 class="text-2xl font-bold">BS Food ERP</h1>
+      <h1 class="text-3xl font-bold gradient-text">BS Food ERP</h1>
       <nav>
-        <ul class="flex space-x-4">
-          <li><a href="#dashboard" onclick="showTab('dashboard')" class="hover:text-yellow-300">Dashboard</a></li>
-          <li><a href="#clients" onclick="showTab('clients')" class="hover:text-yellow-300">Clients</a></li>
-          <li><a href="#billing" onclick="showTab('billing')" class="hover:text-yellow-300">Billing</a></li>
-          <li><a href="#inventory" onclick="showTab('inventory')" class="hover:text-yellow-300">Inventory</a></li>
-          <li><a href="#payments" onclick="showTab('payments')" class="hover:text-yellow-300">Payments</a></li>
-          <li><a href="#sales" onclick="showTab('sales')" class="hover:text-yellow-300">Sales</a></li>
+        <ul class="flex space-x-6">
+          <li><a href="#dashboard" onclick="showTab('dashboard')" class="text-white hover:text-blue-300 transition">Dashboard</a></li>
+          <li><a href="#clients" onclick="showTab('clients')" class="text-white hover:text-blue-300 transition">Clients</a></li>
+          <li><a href="#inventory" onclick="showTab('inventory')" class="text-white hover:text-blue-300 transition">Inventory</a></li>
+          <li><a href="#production" onclick="showTab('production')" class="text-white hover:text-blue-300 transition">Production</a></li>
+          <li><a href="#sales" onclick="showTab('sales')" class="text-white hover:text-blue-300 transition">Sales</a></li>
+          <li><a href="#reports" onclick="showTab('reports')" class="text-white hover:text-blue-300 transition">Reports</a></li>
         </ul>
       </nav>
     </div>
   </header>
-  <main class="container mx-auto p-4">
+  <main class="container mx-auto py-8 px-4">
     <div id="dashboard" class="tab-content">
-      <h2 class="text-xl font-bold mb-4">Dashboard</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-white p-4 rounded shadow">
-          <h3>Current Month Sales</h3>
-          <p id="current-month-sales" class="text-lg font-semibold">₹0</p>
+      <h2 class="text-2xl font-semibold gradient-text mb-6">Dashboard Overview</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="card p-6">
+          <h3 class="text-lg font-medium text-blue-300">Monthly Sales</h3>
+          <p id="monthly-sales" class="text-2xl font-bold mt-2">₹0</p>
         </div>
-        <div class="bg-white p-4 rounded shadow">
-          <h3>Current FY Sales</h3>
-          <p id="current-fy-sales" class="text-lg font-semibold">₹0</p>
+        <div class="card p-6">
+          <h3 class="text-lg font-medium text-blue-300">Production Output</h3>
+          <p id="production-output" class="text-2xl font-bold mt-2">0 units</p>
         </div>
-        <div class="bg-white p-4 rounded shadow">
-          <h3>Profit</h3>
-          <p id="profit" class="text-lg font-semibold">₹0</p>
+        <div class="card p-6">
+          <h3 class="text-lg font-medium text-blue-300">Total Stock Value</h3>
+          <p id="stock-value" class="text-2xl font-bold mt-2">₹0</p>
         </div>
       </div>
     </div>
     <div id="clients" class="tab-content hidden">
-      <h2 class="text-xl font-bold mb-4">Manage Clients</h2>
-      <div class="bg-white p-4 rounded shadow">
+      <h2 class="text-2xl font-semibold gradient-text mb-6">Client Management</h2>
+      <div class="card p-6">
         <input id="client-id" type="hidden">
-        <div class="mb-2">
-          <label>Name:</label>
-          <input id="client-name" type="text" class="border p-2 w-full">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div><label class="block text-gray-300">Name:</label><input id="client-name" type="text" class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"></div>
+          <div><label class="block text-gray-300">Contact:</label><input id="client-contact" type="text" class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"></div>
+          <div><label class="block text-gray-300">Address:</label><input id="client-address" type="text" class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"></div>
         </div>
-        <div class="mb-2">
-          <label>Contact:</label>
-          <input id="client-contact" type="text" class="border p-2 w-full">
-        </div>
-        <div class="mb-2">
-          <label>Address:</label>
-          <input id="client-address" type="text" class="border p-2 w-full">
-        </div>
-        <button onclick="saveClient()" class="bg-blue-500 text-white p-2">Save Client</button>
-        <div id="client-list" class="mt-4"></div>
-      </div>
-    </div>
-    <div id="billing" class="tab-content hidden">
-      <h2 class="text-xl font-bold mb-4">Create Invoice</h2>
-      <div class="bg-white p-4 rounded shadow">
-        <select id="invoice-client" class="border p-2 w-full mb-2">
-          <option value="">Select Client</option>
-        </select>
-        <div id="invoice-items" class="mb-2">
-          <select id="invoice-product" class="border p-2 w-full">
-            <option value="">Select Product</option>
-          </select>
-          <input id="invoice-quantity" type="number" class="border p-2 w-full mt-2" placeholder="Quantity" min="1">
-        </div>
-        <button onclick="addInvoiceItem()" class="bg-green-500 text-white p-2">Add Item</button>
-        <button onclick="createInvoice()" class="bg-blue-500 text-white p-2 mt-2">Create Invoice</button>
-        <p id="invoice-result" class="mt-2"></p>
+        <button onclick="saveClient()" class="button">Save Client</button>
+        <div id="client-list" class="mt-6 overflow-x-auto"></div>
       </div>
     </div>
     <div id="inventory" class="tab-content hidden">
-      <h2 class="text-xl font-bold mb-4">Inventory</h2>
-      <div class="bg-white p-4 rounded shadow">
-        <h3>Products</h3>
-        <div id="product-inventory"></div>
-        <h3 class="mt-4">Raw Materials</h3>
-        <div id="raw-material-inventory"></div>
+      <h2 class="text-2xl font-semibold gradient-text mb-6">Inventory</h2>
+      <div class="card p-6">
+        <h3 class="text-lg font-medium text-blue-300 mb-4">Products</h3>
+        <div id="product-inventory" class="overflow-x-auto"></div>
+        <h3 class="text-lg font-medium text-blue-300 mt-6 mb-4">Raw Materials</h3>
+        <div id="raw-material-inventory" class="overflow-x-auto"></div>
       </div>
     </div>
-    <div id="payments" class="tab-content hidden">
-      <h2 class="text-xl font-bold mb-4">Record Payment</h2>
-      <div class="bg-white p-4 rounded shadow">
-        <select id="payment-invoice" class="border p-2 w-full mb-2">
-          <option value="">Select Invoice</option>
+    <div id="production" class="tab-content hidden">
+      <h2 class="text-2xl font-semibold gradient-text mb-6">Production Orders</h2>
+      <div class="card p-6">
+        <select id="production-product" class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white mb-4">
+          <option value="">Select Product</option>
         </select>
-        <input id="payment-amount" type="number" class="border p-2 w-full" placeholder="Amount" min="0">
-        <button onclick="recordPayment()" class="bg-blue-500 text-white p-2 mt-2">Record Payment</button>
-        <p id="payment-result" class="mt-2"></p>
+        <input id="production-quantity" type="number" class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white mb-4" placeholder="Quantity" min="1">
+        <button onclick="createProductionOrder()" class="button">Create Order</button>
+        <div id="production-list" class="mt-6 overflow-x-auto"></div>
       </div>
     </div>
     <div id="sales" class="tab-content hidden">
-      <h2 class="text-xl font-bold mb-4">Sales Report</h2>
-      <div class="bg-white p-4 rounded shadow">
-        <input id="sales-start-date" type="date" class="border p-2 w-full mb-2">
-        <input id="sales-end-date" type="date" class="border p-2 w-full mb-2">
-        <button onclick="generateSalesReport()" class="bg-blue-500 text-white p-2">Generate Report</button>
-        <div id="sales-report" class="mt-4"></div>
+      <h2 class="text-2xl font-semibold gradient-text mb-6">Sales & Invoicing</h2>
+      <div class="card p-6">
+        <select id="sales-client" class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white mb-4">
+          <option value="">Select Client</option>
+        </select>
+        <select id="sales-product" class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white mb-4">
+          <option value="">Select Product</option>
+        </select>
+        <input id="sales-quantity" type="number" class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white mb-4" placeholder="Quantity" min="1">
+        <button onclick="createInvoice()" class="button">Create Invoice</button>
+        <div id="invoice-list" class="mt-6 overflow-x-auto"></div>
+      </div>
+    </div>
+    <div id="reports" class="tab-content hidden">
+      <h2 class="text-2xl font-semibold gradient-text mb-6">Reports</h2>
+      <div class="card p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <input id="report-start-date" type="date" class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white">
+          <input id="report-end-date" type="date" class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white">
+        </div>
+        <button onclick="generateReport()" class="button">Generate Report</button>
+        <div id="report-output" class="mt-6 overflow-x-auto"></div>
       </div>
     </div>
   </main>
-  <footer class="bg-blue-800 text-white p-4 text-center mt-4">
-    <p>&copy; 2025 BS Food ERP. All rights reserved.</p>
+  <footer class="bg-gradient-to-r from-gray-900 to-blue-900 p-4 text-center">
+    <p class="text-gray-400">&copy; 2025 BS Food ERP. All rights reserved.</p>
   </footer>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
 </html>
