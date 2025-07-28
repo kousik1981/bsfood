@@ -9,10 +9,16 @@ const firebaseConfig = {
   appId: "1:520628023883:web:20ad7a3174be400ace93ce"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+// Initialize Firebase with error handling
+try {
+  firebase.initializeApp(firebaseConfig);
+  console.log("Firebase initialized successfully");
+} catch (error) {
+  console.error("Firebase initialization error:", error);
+}
 const database = firebase.database();
 
+// Global arrays for data
 let products = [];
 let materials = [];
 let clients = [];
@@ -20,47 +26,46 @@ let invoices = [];
 let payments = [];
 let expenses = [];
 
-// Load data from Firebase
+// Load data from Firebase with error handling
 function loadData() {
-  database.ref('products').once('value').then(snapshot => {
-    products = snapshot.val() || [];
+  console.log("Loading data from Firebase...");
+  Promise.all([
+    database.ref('products').once('value').then(snapshot => { products = snapshot.val() || []; console.log("Products loaded:", products); }),
+    database.ref('materials').once('value').then(snapshot => { materials = snapshot.val() || []; console.log("Materials loaded:", materials); }),
+    database.ref('clients').once('value').then(snapshot => { clients = snapshot.val() || []; console.log("Clients loaded:", clients); }),
+    database.ref('invoices').once('value').then(snapshot => { invoices = snapshot.val() || []; console.log("Invoices loaded:", invoices); }),
+    database.ref('payments').once('value').then(snapshot => { payments = snapshot.val() || []; console.log("Payments loaded:", payments); }),
+    database.ref('expenses').once('value').then(snapshot => { expenses = snapshot.val() || []; console.log("Expenses loaded:", expenses); })
+  ]).then(() => {
     loadProductStockProducts();
-    loadInventoryReport();
-  });
-  database.ref('materials').once('value').then(snapshot => {
-    materials = snapshot.val() || [];
     loadRawMaterialStockMaterials();
-    loadInventoryReport();
-  });
-  database.ref('clients').once('value').then(snapshot => {
-    clients = snapshot.val() || [];
     loadClients();
     loadBillingData();
-  });
-  database.ref('invoices').once('value').then(snapshot => {
-    invoices = snapshot.val() || [];
     loadDashboard();
     loadPaymentInvoices();
+    loadInventoryReport();
     loadSalesReport();
-  });
-  database.ref('payments').once('value').then(snapshot => {
-    payments = snapshot.val() || [];
-    loadPaymentInvoices();
-  });
-  database.ref('expenses').once('value').then(snapshot => {
-    expenses = snapshot.val() || [];
-    loadDashboard();
+    console.log("All data loaded successfully");
+  }).catch(error => {
+    console.error("Error loading data:", error);
   });
 }
 
-// Save data to Firebase
+// Save data to Firebase with error handling
 function saveData() {
-  database.ref('products').set(products);
-  database.ref('materials').set(materials);
-  database.ref('clients').set(clients);
-  database.ref('invoices').set(invoices);
-  database.ref('payments').set(payments);
-  database.ref('expenses').set(expenses);
+  console.log("Saving data to Firebase:", { products, materials, clients, invoices, payments, expenses });
+  Promise.all([
+    database.ref('products').set(products),
+    database.ref('materials').set(materials),
+    database.ref('clients').set(clients),
+    database.ref('invoices').set(invoices),
+    database.ref('payments').set(payments),
+    database.ref('expenses').set(expenses)
+  ]).then(() => {
+    console.log("Data saved successfully");
+  }).catch(error => {
+    console.error("Error saving data:", error);
+  });
 }
 
 // Initialize with sample data if empty
@@ -119,7 +124,7 @@ function loadDashboard() {
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
-  const financialYearStart = new Date(currentYear, 3, 1); // April 1
+  const financialYearStart = new Date(currentYear, 3, 1);
   if (currentMonth < 3) financialYearStart.setFullYear(currentYear - 1);
 
   const currentMonthRevenue = invoices
@@ -189,7 +194,7 @@ function loadDashboardContent() {
   const productTotal = products.reduce((sum, p) => sum + p.stock, 0);
   const materialLow = materials.filter(m => m.stock < 10);
   const materialTotal = materials.reduce((sum, m) => sum + m.stock, 0);
-  document.getElementById('dashboard-content').innerHTML += `
+  document.getElementById('dashboard-content').innerHTML = `
     <div class="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition transform hover:-translate-y-2">
       <h3 class="text-xl font-semibold text-blue-700">Total Product Stock</h3>
       <p class="text-2xl font-bold text-gold-600 mt-2">${productTotal} units</p>
@@ -280,6 +285,7 @@ function saveClient() {
     contact: document.getElementById('client-contact').value,
     address: document.getElementById('client-address').value
   };
+  console.log("Attempting to save client:", client);
   if (!client.name || !client.contact) {
     alert('Please enter client name and contact');
     return;
@@ -291,6 +297,7 @@ function saveClient() {
     clients[index] = client;
   }
   saveData();
+  console.log("Client save attempted");
   document.getElementById('client-id').value = '';
   document.getElementById('client-name').value = '';
   document.getElementById('client-contact').value = '';
